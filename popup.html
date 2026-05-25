@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salesforce Query Vault</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Salesforce Query Vault</p>
+        <h1>SOQL library for fast Inspector launches</h1>
+      </div>
+      <button id="addQueryButton" class="button button-primary" type="button">Add Query</button>
+    </header>
+
+    <section class="toolbar card">
+      <label class="field">
+        <span>Search</span>
+        <input id="searchInput" type="search" placeholder="Search title, category, or SOQL">
+      </label>
+
+      <label class="field">
+        <span>Category</span>
+        <select id="categoryFilter"></select>
+      </label>
+
+      <div class="toolbar-actions">
+        <button id="exportButton" class="button button-secondary" type="button">Export JSON</button>
+        <button id="importButton" class="button button-secondary" type="button">Import JSON</button>
+        <input id="importInput" type="file" accept="application/json" hidden>
+      </div>
+    </section>
+
+    <section class="status-row">
+      <div id="statusMessage" class="status-message" aria-live="polite"></div>
+      <div id="resultCount" class="result-count"></div>
+    </section>
+
+    <section class="instructions card">
+      <p>
+        Queries are copied to your clipboard first. Inspector deep-linking is best-effort on Chrome and falls back to manual paste instructions when needed.
+      </p>
+    </section>
+
+    <section id="queryList" class="query-list" aria-live="polite"></section>
+  </main>
+
+  <dialog id="queryModal" class="modal">
+    <form id="queryForm" class="modal-content" method="dialog">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Custom Query</p>
+          <h2 id="queryModalTitle">Add Query</h2>
+        </div>
+        <button id="closeQueryModalButton" class="icon-button" type="button" aria-label="Close">×</button>
+      </div>
+
+      <label class="field">
+        <span>Title</span>
+        <input id="queryTitle" name="title" type="text" maxlength="80" required>
+      </label>
+
+      <label class="field">
+        <span>Category</span>
+        <select id="queryCategory" name="category" required></select>
+      </label>
+
+      <label class="field">
+        <span>Description</span>
+        <textarea id="queryDescription" name="description" rows="2" maxlength="180" placeholder="Optional summary"></textarea>
+      </label>
+
+      <label class="field">
+        <span>SOQL Query</span>
+        <textarea id="querySoql" name="query" rows="8" placeholder="SELECT Id FROM Account WHERE Id = '{{recordId}}'" required></textarea>
+      </label>
+
+      <p class="modal-note">Supported placeholders include {{quoteNumber}}, {{recordId}}, {{userEmail}}, {{productCode}}, and {{opportunityId}}.</p>
+
+      <div class="modal-actions">
+        <button id="cancelQueryModalButton" class="button button-secondary" type="button">Cancel</button>
+        <button class="button button-primary" type="submit">Save Query</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="variableModal" class="modal">
+    <form id="variableForm" class="modal-content" method="dialog">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Query Variables</p>
+          <h2>Fill Placeholder Values</h2>
+        </div>
+        <button id="closeVariableModalButton" class="icon-button" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div id="variableFields" class="variable-fields"></div>
+
+      <div class="modal-actions">
+        <button id="cancelVariableModalButton" class="button button-secondary" type="button">Cancel</button>
+        <button class="button button-primary" type="submit">Apply Values</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="browserCompat.js"></script>
+  <script src="defaultQueries.js"></script>
+  <script src="storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
